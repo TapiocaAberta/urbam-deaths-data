@@ -70,7 +70,7 @@ public class DeathSummaryCSV {
     private static DeathRegister lineToRegister(String line) {
         var parts = line.replaceAll("\"", "").split(",");
         var dateParts = parts[DATE_IDX].split("/");
-        var funeral = "DIRETO".equalsIgnoreCase(parts[FUNERAL_IDX]) ? "DIRETO" : "-";
+        var funeral = "DIRETO".equalsIgnoreCase(parts[FUNERAL_IDX]) ? "DIRETO" : "OUTRO";
         return new DeathRegister(dateParts[1], dateParts[2], funeral);
     }
 
