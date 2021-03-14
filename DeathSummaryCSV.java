@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -50,10 +51,9 @@ public class DeathSummaryCSV {
         var header = Stream.concat(stream(BASE_HEADER),
                                    registers.stream().map(DeathRegister::year).distinct())
                            .collect(Collectors.toList());
-        System.out.println(header);
-
-        System.out.println(registers.size());
-
+        
+        registers.sort((r1, r2) -> r1.month.compareTo(r2.month));
+        
         var body = registers.stream().map(r -> {
             var lineParts = new String[header.size()];
             Arrays.fill(lineParts, "0");
@@ -61,7 +61,6 @@ public class DeathSummaryCSV {
             lineParts[FUNERAL_OUT_IDX] = r.funeral();
             // fill year index with 1
             lineParts[header.indexOf(r.year())] = "1";
-
             return String.join(",", lineParts);
         }).collect(Collectors.joining("\n"));
 
@@ -69,9 +68,9 @@ public class DeathSummaryCSV {
     }
 
     private static DeathRegister lineToRegister(String line) {
-        var parts = line.split(",");
-        var dateParts = parts[DATE_IDX].replaceAll("\"", "").split("/");
-        var funeral = "DIRETO".equals(parts[FUNERAL_IDX]) ? "DIRETO" : "OUTRO";
+        var parts = line.replaceAll("\"", "").split(",");
+        var dateParts = parts[DATE_IDX].split("/");
+        var funeral = "DIRETO".equalsIgnoreCase(parts[FUNERAL_IDX]) ? "DIRETO" : "-";
         return new DeathRegister(dateParts[1], dateParts[2], funeral);
     }
 
@@ -84,8 +83,4 @@ public class DeathSummaryCSV {
         }
     }
 
-    private static void exit(String message) {
-        System.out.println(message);
-        System.exit(0);
-    }
 }
