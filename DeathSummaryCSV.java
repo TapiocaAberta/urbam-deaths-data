@@ -1,6 +1,5 @@
-
 //usr/bin/env jbang "$0" "$@" ; exit $?
-//JAVA 16
+//JAVA 17+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
